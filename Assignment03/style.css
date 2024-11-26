@@ -1,0 +1,30 @@
+.heading{
+    color:rgb(200, 60, 60) ;
+    background:aquamarine;
+}
+#paragraph{
+     background-color: cadetblue;
+}
+p{
+    background-color: azure;
+}
+#para1{
+    background-color: aqua;
+}
+.lowe-heading{
+    text-align: center;
+    color: aqua;
+}
+table{
+    border: 4px solid black;
+    width: 60%;
+   margin-left: 8rem;
+  
+}
+.topHeading{
+    background-color: black;
+    color:white;
+}
+td{
+    background-color:tomato;
+}
