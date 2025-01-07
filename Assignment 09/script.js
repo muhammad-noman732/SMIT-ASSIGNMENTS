@@ -46,3 +46,36 @@ while(num <= 100){
     }
     num++;
 }
+
+// 6. Write a js program to find sum of all natural numbers between 1 to n.
+var sum = 0 ;
+var num = 1 ;
+while (num <=100){
+    sum+= num;
+    num++;
+
+}
+console.log("sum :", sum);
+
+// 7. Write a js program to find sum of all even numbers between 1 to n.
+var sum1 = 0 ;
+var num = 1 ;
+while (num <=100){
+    if(num %2 === 0){
+       sum1+= num;
+    }
+    num++;
+}
+console.log("sum :", sum1);
+
+// 8. Write a js program to find sum of all odd numbers between 1 to n.
+
+var sum2 = 0 ;
+var num = 1 ;
+while (num <=100){
+    if(num %2 !== 0){
+       sum2+= num;
+    }
+    num++;
+}
+console.log("sum :", sum2);
