@@ -131,7 +131,7 @@ else{
 // Q9. Write a js program to input any character and check whether it is alphabet, digit or special character.
 
 var char = prompt("enter a character :");
-    if ( (char <=0 || char >0 )){
+    if ( (char <=0 || char >10 )){
         console.log("character is digit");
         
     }
