@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaFlag, FaUsers, FaStore, FaRobot, FaUserFriends, FaClock, FaBookmark, FaRss, FaCalendarAlt, FaChartBar, FaUser, FaVideo } from 'react-icons/fa';
 import { 
     MdGroups ,
@@ -11,14 +11,19 @@ import {
 
 import profile from '../../assets/profile.png'
 import SidebarItem from '../sidebarItem/SidebarItem';
+
 const SideBar = () => {
+  const[mobileMenue , setMobileMenue] = useState(false)
+
     return (
         <div className="w-[400px]  my-20 p-4  flex flex-col gap-3 bg-white">
+          
           <div className="flex gap-3 items-center mb-4">
             <img className="w-10 h-10 rounded-full object-cover" src={profile} alt="profile" />
             <p className="text-gray-800 font-semibold">Muhammad Noman</p>
           </div>
     
+
           <SidebarItem icon={<FaRobot />} label="Meta AI" />
           <SidebarItem icon={<FaUserFriends />} label="Friends" />
           <SidebarItem icon={<FaClock />} label="Memories" />

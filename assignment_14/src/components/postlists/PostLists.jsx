@@ -1,161 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PostItem from './PostItem';
 
 const PostLists = () => {
   const [posts, setPosts] = useState([]);
-  const [commentMap, setComentMap] = useState({});
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  // const [showComments , setShowComments] = useState(false);
-  const [comment , setComment] = useState("")
+ 
+//   for pagination 
+           const [page, setPage] = useState(1); // always start from page 1 not 0
+           const [limit] = useState(10); // Items per page 
+           const [totalPages, setTotalPages] = useState(0); // total pages
+            const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const fetchPosts = async () => {
-    try {
+ 
+
+const fetchPerPage =async ()=>{
+  try {
       setLoading(true);
-      const response = await fetch('https://dummyjson.com/posts');
+      const skip = (page -1) * limit
+      const response = await fetch(`https://dummyjson.com/posts?limit=${limit}&skip=${skip}`);
+      console.log("response " , response);
       const data = await response.json();
       setPosts(data.posts);
-      setError(null);
-    } catch (error) {
-      setError(error.toString());
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchComments = async (id) => {
-    try {
-      setLoading(true);
-      const response = await fetch(`https://dummyjson.com/posts/${id}/comments`);
-      const data = await response.json();
-      setComentMap((prev) => ({
-        ...prev,
-        [id]: data.comments,
-      }));
-      setError(null);
-    } catch (error) {
-      setError(error.toString());
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const addNewComment = async (postId) => {
-    try {
-      const response = await fetch(`https://dummyjson.com/comments/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          body: comment,
-          postId: postId,
-          userId: 5
-        })
-      });
-      const data = await response.json();
-      console.log(data);
-      setComentMap(prev=>({
-        ...prev,
-        [postId]: [...(prev[postId] ||[]) , data]
-    }))
-  
-      setComment("")
-    } catch (error) {
-      console.log("error , error");
-      setError(error)
+      setTotalPages(Math.ceil(data.total / limit))
       
-    }
-
+  } catch (error) {
+    setError(error);
+    console.log("error" , error);  
+  } finally {
+    setLoading(false);
   }
-
-  const handleViewPost = (postId) => {
-    navigate(`/posts/${postId}`);
-  };
+       
+}
+ 
+      useEffect(() => {
+            fetchPerPage();
+        }, [limit , page]);
+  
 
   return (
+
     <div className="px-4 md:px-20 py-6 bg-gray-100 min-h-screen">
       {loading && <p className="text-center text-gray-500">Loading posts...</p>}
       {error && <p className="text-red-500 text-center">{error}</p>}
+      <h1 className="text-xl font-bold mb-3">Posts Page {page}</h1>
 
       {posts.map((post) => (
-        <div
-          key={post?.id}
-          className="bg-white shadow-md rounded-xl mb-6 overflow-hidden border border-gray-200"
-        >
-          {/* Author info */}
-          <div className="flex items-center gap-3 px-4 pt-4">
-            <img
-              src="https://randomuser.me/api/portraits/men/75.jpg"
-              alt="profile"
-              className="w-10 h-10 rounded-full object-cover"
-            />
-            <p className="font-semibold text-sm text-gray-800">User {post.userId}</p>
-          </div>
-
-          {/* Post content */}
-          <div
-            onClick={() => {
-              handleViewPost(post?.id);
-            }}
-            className="px-4 py-2 cursor-pointer"
-          >
-            <h2 className="text-lg font-semibold text-gray-800 mb-1">{post?.title}</h2>
-            <p className="text-sm text-gray-600">{post?.body}</p>
-          </div>
-
-          {/* Post image */}
-          <img
-            className="w-full h-64 object-cover"
-            src="https://media.istockphoto.com/id/1127245421/photo/woman-hands-praying-for-blessing-from-god-on-sunset-background.jpg?s=1024x1024&w=is&k=20&c=faoiFapQkhucuLuor9gBnblJ4KJpqvEgariqalvzRas="
-            alt="post"
-          />
-
-          {/* Footer actions */}
-          <div className="px-4 py-3 border-t text-sm text-gray-600">
-            <div className="flex justify-between items-center mb-2">
-              <p className="hover:text-blue-600 cursor-pointer transition">👍 Likes: {post.reactions?.likes}</p>
-              <p
-                onClick={() => fetchComments(post?.id)}
-                className="hover:text-blue-600 cursor-pointer transition"
-              >
-                💬 Comments
-              </p>
-              <p className="hover:text-blue-600 cursor-pointer transition">📤 Share</p>
-            </div>
-
-            {/* Comments */}
-
-            {commentMap[post.id]?.length > 0 && (
-              <div className="space-y-3 mt-4">
-                {commentMap[post.id].map((comment) => (
-                  <div key={comment.id} className="flex items-start gap-3">
-                    <img
-                      src={`https://randomuser.me/api/portraits/lego/${comment.id % 10}.jpg`}
-                      alt="avatar"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <div className="bg-gray-100 px-4 py-2 rounded-xl max-w-xl">
-                      <p className="text-sm font-semibold text-gray-800">{comment.user.username}</p>
-                      <p className="text-sm text-gray-700">{comment.body}</p>
-                    </div>
-                  </div>
-                ))}
-                <div className='flex justify-between'>
-                 <input className='py-1 px-1 border-none mr-1.5' type="text"   placeholder='enter a comment' onChange={(e)=> setComment(e.target.value)}/>
-                 <button className='bg-green-600 text-1xl text-white border-none rounded-md py-1 px-2  hover:bg-green-900 transition' onClick={()=> {addNewComment(post.id)}}>Add comment</button>
-                  </div>
-                 </div>
-            )}
-          </div>
-        </div>
+             <PostItem key={post?.id }post= {post}/>
       ))}
+
+      <div className="flex justify-center gap-3 mt-6">
+  <button
+   className='text-xl bg-gray-200  rounded-md px-3 py-2'
+    disabled={page === 1}
+    onClick={() => setPage((prev) => Math.max( prev - 1 , 1))}
+  >
+    Previous
+  </button>
+
+  <span>Page {page} of {totalPages}</span>
+
+  <button
+  className='text-xl bg-green-500 text-white  rounded-md px-3 py-1r'
+    disabled={page === totalPages}
+    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+  >
+    Next
+  </button>
+</div>
+
+     
     </div>
   );
 };

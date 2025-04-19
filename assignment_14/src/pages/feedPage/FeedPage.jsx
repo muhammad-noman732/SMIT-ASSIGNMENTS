@@ -3,7 +3,7 @@ import PostLists from '../../components/postlists/PostLists'
 
 const FeedPage = () => {
   return (
-    <div className='pt-16 w-[550px]'>
+    <div className='pt-16 w-[700px]'>
       <PostLists/>
     </div>
   )
